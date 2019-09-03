@@ -22,7 +22,7 @@ Unload(PDRIVER_OBJECT)
 	return;
 }
 
-void test_vecint()
+void Test_VecInit()
 {
 	vec = new(PagedPool) ktd::vector<int, PagedPool, 'cdtd'>(10);
 	vec->push_back(1);
@@ -34,7 +34,7 @@ void test_vecint()
 	(*vec)[5] = 98;
 }
 
-void something()
+void Test_Random()
 {
 	ktd::vector<int, PagedPool, 'tset'> *vect = new(PagedPool) ktd::vector<int, PagedPool, 'tset'>(10);
 	delete vect;
@@ -43,7 +43,7 @@ void something()
 	delete[] ptr;
 }
 
-void CopyTest_pod()
+void Test_Copypod()
 {
 	ktd::vector<int, PagedPool, 'cdtd'> v1;
 	v1.push_back(1);
@@ -56,7 +56,7 @@ void CopyTest_pod()
 	vec2;
 }
 
-void CopyTest_nonpod()
+void Test_Copynonpod()
 {
 	ktd::vector<test, PagedPool, 'cdtd'> somevec;
 	test obj;
@@ -73,7 +73,7 @@ void CopyTest_nonpod()
 	//vec2.push_back(obj);
 }
 
-void test_vecclass()
+void Test_VecClass()
 {	
 	ktd::vector<test, NonPagedPool, 'tset'> vectest;
 	DbgPrint("test size %lu", sizeof(test));
@@ -87,7 +87,7 @@ void test_vecclass()
 }
 
 
-void MoveTest_pod()
+void Test_Movepod()
 {
 	ktd::vector<int, PagedPool, 'cdtd'> somevec;
 	somevec.push_back(1);
@@ -99,7 +99,7 @@ void MoveTest_pod()
 	ktd::vector<int, PagedPool, 'cdtd'> vec2 = move(somevec);
 }
 
-void MoveTest_nonpod()
+void Test_Movenonpod()
 {
 	ktd::vector<test, PagedPool, 'cdtd'> somevec;
 	test obj;
@@ -115,31 +115,31 @@ void MoveTest_nonpod()
 	ktd::vector<test, PagedPool, 'cdtd'> vec2 = move(somevec);
 }
 
-void Push()
+void Test_Push()
 {
 	ktd::vector<anothertestclass, PagedPool, 'tset'> v1;
 	v1.push_back(1);	//should call constructor and then a move assignment operator.
 }
 
-void Emplace()
+void Test_Emplace()
 {
 	ktd::vector<anothertestclass, PagedPool, 'tset'> v2;
 	v2.emplace_back(1);	//should call constructor.
 }
 
-void Push_vs_Emplacetest()
+void Test_PushVsEmplace()
 {
-	Push();
-	Emplace();
+	Test_Push();
+	Test_Emplace();
 }
 
-void TestReserve()
+void Test_Reserve()
 {
 	ktd::vector<anothertestclass, PagedPool, 'tset'> v;
 	v.Reserve(15);	//should not call construcotrs.
 }
 
-void TestDefault()
+void Test_Default()
 {
 	ktd::vector<test, PagedPool, 'tset'> vect2(2);
 }
@@ -147,22 +147,23 @@ void TestDefault()
 NTSTATUS
 DriverEntry(PDRIVER_OBJECT DriverObject, PUNICODE_STRING)
 {	
-	//TestDefault();
-	//TestReserve();
-	//Push_vs_Emplacetest();
+	Test_Default();
+	Test_Reserve();
+	Test_PushVsEmplace();
 
-	//MoveTest_pod();
-	//MoveTest_nonpod();
+	Test_Movepod();
+	Test_Movenonpod();
 
-	//CopyTest_pod();
-	//CopyTest_nonpod();
+	Test_Copypod();
+	Test_Copynonpod();
 
-	//int *i = new(PagedPool) int; i;
-	//delete i;
+	int *i = new(PagedPool) int; i;
+	delete i;
 	
-	test_vecint();
-	//something();
-	//test_vecclass();
+	Test_VecInit();
+	Test_Random();
+	Test_VecClass();
+	
 	DriverObject->DriverUnload = Unload;
 	return STATUS_SUCCESS;
 }
