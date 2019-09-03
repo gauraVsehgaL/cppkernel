@@ -211,10 +211,10 @@ namespace ktd
 			}
 		}
 
-		void DeAllocate(T* ptr)
+		void DeAllocate(T* Ptr)
 		{
-			if (ptr)
-				ExFreePool(ptr);
+			if (Ptr)
+				ExFreePool(Ptr);
 		}
 	};
 }
