@@ -97,7 +97,7 @@ namespace ktd
 				ptr[i].~T();
 			}
 
-			ExFreePool(ptr);
+			DeAllocate(ptr);
 		}
 
 		void Reserve(size_t newCapacity)
@@ -119,7 +119,7 @@ namespace ktd
 					origptr[i].~T();
 				}
 
-				ExFreePool(origptr);
+				DeAllocate(ptr);
 			}
 		}
 
