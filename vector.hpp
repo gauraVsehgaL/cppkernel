@@ -102,6 +102,9 @@ namespace ktd
 
 		void reserve(size_t NewCapacity)
 		{
+			if (NewCapacity <= Capacity)
+				return;
+
 			auto origptr = ptr;
 			ptr = allocate(NewCapacity);
 		
