@@ -11,7 +11,7 @@ namespace ktd
 
 		vector(size_t InitialNumberOfElements):ptr(nullptr), Capacity(InitialNumberOfElements), NumberOfElements(0)
 		{
-			Reserve(Capacity);
+			reserve(Capacity);
 
 			NumberOfElements = InitialNumberOfElements;
 			for (auto i = 0UL; i < NumberOfElements; i++)
@@ -23,7 +23,7 @@ namespace ktd
 		vector(size_t InitialNumberOfElements, T val):ptr(nullptr), Capacity(InitialNumberOfElements), NumberOfElements(0)
 		{
 			Capacity = InitialNumberOfElements;
-			Reserve(Capacity);
+			reserve(Capacity);
 			NumberOfElements = InitialNumberOfElements;
 			for (auto i = 0UL; i < NumberOfElements; i++)
 			{
@@ -35,7 +35,7 @@ namespace ktd
 		{
 			if (Capacity > 0)
 			{
-				Reserve(Capacity);
+				reserve(Capacity);
 			}
 					
 			for (auto i = 0UL; i < NumberOfElements; i++)
@@ -71,9 +71,9 @@ namespace ktd
 				{
 					this->Capacity = other.Capacity;
 					auto OrigPtr = this->ptr;
-					this->ptr = ReserveOnly(Capacity);
-					Destroy(OrigPtr, this->NumberOfElements);
-					DeAllocate(OrigPtr);
+					this->ptr = allocate(Capacity);
+					destroy(OrigPtr, this->NumberOfElements);
+					deallocate(OrigPtr);
 				}
 
 				this->NumberOfElements = other.NumberOfElements;
@@ -97,20 +97,20 @@ namespace ktd
 				ptr[i].~T();
 			}
 
-			DeAllocate(ptr);
+			deallocate(ptr);
 		}
 
-		void Reserve(size_t newCapacity)
+		void reserve(size_t NewCapacity)
 		{
 			auto origptr = ptr;
-			ptr = static_cast<T*>(ExAllocatePoolWithTag(PoolType, sizeof(T) * newCapacity, Tag));
+			ptr = allocate(NewCapacity);
 		
 			for (auto i = 0UL; i < NumberOfElements; i++)
 			{
 				new (ptr + i) T(origptr[i]);
 			}
 
-			Capacity = newCapacity;
+			Capacity = NewCapacity;
 
 			if (origptr)
 			{
@@ -119,7 +119,7 @@ namespace ktd
 					origptr[i].~T();
 				}
 
-				DeAllocate(origptr);
+				deallocate(origptr);
 			}
 		}
 
@@ -134,7 +134,7 @@ namespace ktd
 				
 				NewCapacity *= 2;
 
-				Reserve(NewCapacity);
+				reserve(NewCapacity);
 			}
 			
 			new (ptr + NumberOfElements) T(val);
@@ -152,7 +152,7 @@ namespace ktd
 
 				NewCapacity *= 2;
 
-				Reserve(NewCapacity);
+				reserve(NewCapacity);
 			}
 
 			new (ptr + NumberOfElements) T(move(val));
@@ -171,7 +171,7 @@ namespace ktd
 
 				NewCapacity *= 2;
 
-				Reserve(NewCapacity);
+				reserve(NewCapacity);
 			}
 
 			new (ptr + NumberOfElements) T(forward<Args>(args)...);
@@ -191,7 +191,7 @@ namespace ktd
 
 		void Clear()
 		{
-			Destroy(ptr, NumberOfElements);
+			destroy(ptr, NumberOfElements);
 			NumberOfElements = 0;
 		}
 
@@ -201,12 +201,12 @@ namespace ktd
 		size_t Capacity;
 		size_t NumberOfElements;
 
-		T* ReserveOnly(size_t NewCapacity)
+		T* allocate(size_t NewCapacity)
 		{
-			return static_cast<T*>(ExAllocatePoolWithTag(PoolType, sizeof(T) * newCapacity, Tag));
+			return static_cast<T*>(ExAllocatePoolWithTag(PoolType, sizeof(T) * NewCapacity, Tag));
 		}
 
-		void Destroy(T *mem, size_t NumElems)
+		void destroy(T *mem, size_t NumElems)
 		{
 			if (!mem)
 				return;
@@ -217,10 +217,10 @@ namespace ktd
 			}
 		}
 
-		void DeAllocate(T* Ptr)
+		void deallocate(T* mem)
 		{
-			if (Ptr)
-				ExFreePool(Ptr);
+			if (mem)
+				ExFreePool(mem);
 		}
 	};
 }
