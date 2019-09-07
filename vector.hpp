@@ -119,7 +119,7 @@ namespace ktd
 					origptr[i].~T();
 				}
 
-				DeAllocate(ptr);
+				DeAllocate(origptr);
 			}
 		}
 
@@ -189,6 +189,12 @@ namespace ktd
 			return ptr[index];
 		}
 
+		void Clear()
+		{
+			Destroy(ptr, NumberOfElements);
+			NumberOfElements = 0;
+		}
+
 	private:
 		
 		T *ptr;
@@ -200,14 +206,14 @@ namespace ktd
 			return static_cast<T*>(ExAllocatePoolWithTag(PoolType, sizeof(T) * newCapacity, Tag));
 		}
 
-		void Destroy(T *ptr, size_t NumberOfElements)
+		void Destroy(T *mem, size_t NumElems)
 		{
-			if (!ptr)
+			if (!mem)
 				return;
 
-			for (auto i = 0UL; i < NumberOfElements; i++)
+			for (auto i = 0UL; i < NumElems; i++)
 			{
-				ptr[i].~T();
+				mem[i].~T();
 			}
 		}
 
