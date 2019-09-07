@@ -9,39 +9,28 @@ namespace ktd
 		
 		vector() :ptr(nullptr), Capacity(0), NumberOfElements(0) {}
 
-		vector(size_t InitialNumberOfElements):ptr(nullptr), Capacity(InitialNumberOfElements), NumberOfElements(0)
+		vector(size_t InitialNumberOfElements):ptr(nullptr), Capacity(0), NumberOfElements(0)
 		{
-			reserve(Capacity);
-
+			reserve(InitialNumberOfElements);
 			NumberOfElements = InitialNumberOfElements;
 			for (auto i = 0UL; i < NumberOfElements; i++)
-			{
 				new (ptr + i) T();
-			}
 		}
 
-		vector(size_t InitialNumberOfElements, T val):ptr(nullptr), Capacity(InitialNumberOfElements), NumberOfElements(0)
+		vector(size_t InitialNumberOfElements, T val):vector(InitialNumberOfElements)
 		{
-			Capacity = InitialNumberOfElements;
-			reserve(Capacity);
+			reserve(InitialNumberOfElements);
 			NumberOfElements = InitialNumberOfElements;
 			for (auto i = 0UL; i < NumberOfElements; i++)
-			{
 				new (ptr + i) T(val);
-			}
 		}
 
-		vector(const vector<T, PoolType, Tag> &other) :ptr(nullptr), Capacity(other.Capacity), NumberOfElements(0)
+		vector(const vector<T, PoolType, Tag> &other) :vector()
 		{
-			if (Capacity > 0)
-			{
-				reserve(Capacity);
-			}
-					
+			reserve(other.Capacity);
+			NumberOfElements = other.NumberOfElements;
 			for (auto i = 0UL; i < NumberOfElements; i++)
-			{
 				new (ptr +i) T(other.ptr[i]);
-			}
 		}
 
 		vector(vector<T, PoolType, Tag> &&other) :Capacity(other.Capacity), NumberOfElements(other.NumberOfElements)
@@ -93,34 +82,28 @@ namespace ktd
 				return;
 
 			for (auto i = 0UL; i < NumberOfElements; i++)
-			{
 				ptr[i].~T();
-			}
 
 			deallocate(ptr);
 		}
 
 		void reserve(size_t NewCapacity)
 		{
-			if (NewCapacity <= Capacity)
+			if (NewCapacity <= Capacity || NewCapacity == 0)
 				return;
 
 			auto origptr = ptr;
 			ptr = allocate(NewCapacity);
 		
 			for (auto i = 0UL; i < NumberOfElements; i++)
-			{
 				new (ptr + i) T(origptr[i]);
-			}
 
 			Capacity = NewCapacity;
 
 			if (origptr)
 			{
 				for (auto i = 0UL; i < NumberOfElements; i++)
-				{
 					origptr[i].~T();
-				}
 
 				deallocate(origptr);
 			}
@@ -215,9 +198,7 @@ namespace ktd
 				return;
 
 			for (auto i = 0UL; i < NumElems; i++)
-			{
 				mem[i].~T();
-			}
 		}
 
 		void deallocate(T* mem)
