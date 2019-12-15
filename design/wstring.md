@@ -2,7 +2,7 @@
 
 *What:*
 
-std::wstring like string manipulation in windows kernel. Internally leveraging UNICODE_STRING.
+std::wstring like string manipulation in windows kernel. Internally leveraging ```UNICODE_STRING```.
 
 *Interfaces:*
 
