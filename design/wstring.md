@@ -2,7 +2,7 @@
 
 *What:*
 
-std::wstring like string manipulation in windows kernel. Internally leveraging ```UNICODE_STRING```.
+```std::wstring``` like string manipulation in windows kernel.
 
 *Interfaces:*
 
@@ -15,4 +15,8 @@ auto Length = str.length();
 
 str.push_back(L'k');
 str.append(anotherstr);
+
+str.find(anotherstr);
+
+str == anotherstr;
 ```
