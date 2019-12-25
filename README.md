@@ -6,4 +6,4 @@ Done:
 * ktd::vector
 
 TODO:
-* ktd::wstring implementation encapsulating UNICODE_STRING.
+* ktd::wstring implementation.
