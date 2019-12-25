@@ -1,9 +1,9 @@
 # cppkernel
-Using C++ in kernel
+Using `C++` in kernel
 
 Done:
-* new
-* ktd::vector
+* `new`
+* `ktd::vector`
 
 TODO:
-* ktd::wstring implementation.
+* `ktd::wstring` implementation.
