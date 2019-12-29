@@ -1,3 +1,5 @@
+#pragma once
+
 void* __cdecl operator new(size_t size, POOL_TYPE Pool, unsigned long Tag = 'ktd')
 {
 	return ExAllocatePoolWithTag(Pool, size, Tag);
