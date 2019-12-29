@@ -19,4 +19,6 @@ str.append(anotherstr);
 str.find(anotherstr);
 
 str == anotherstr;
+
+const wchar_t *internal = str.c_str();
 ```
