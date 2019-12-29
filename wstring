@@ -1,0 +1,78 @@
+#include "new.hpp"
+
+namespace ktd
+{
+	template<POOL_TYPE PoolType, unsigned long Tag>
+	class wstring
+	{
+	public:
+		wstring() : ptr (nullptr), Length(0), Capacity(0)
+		{
+			if (!Capacity)
+				Capacity = 1;	//Minimum 1 Capacity.
+
+			ptr = new(PoolType, Tag) wchar_t[Capacity];
+			ptr[Length] = '\0';
+		}
+
+		wstring(const wchar_t *other)
+		{
+			auto OtherLen = wcslen(other);
+			Length = OtherLen;				// Even if length is zero, we are going to go ahead and allocate memory so that we don't have handle c_Str() separately
+			Capacity = OtherLen + 1;		// For nullptr, so that c_str can directly return this internal pointer.
+			ptr = new(PoolType, Tag) wchar_t[Capacity];
+			memcpy(ptr, other, sizeof(wchar_t) * Length);
+			ptr[Length] = '\0';
+		}
+
+		wstring(const wstring &other) : Length(other.length()), Capacity(other.Capacity)
+		{
+			if (!Capacity)
+				Capacity = 1;	//Minimum 1 Capacity.
+			
+			ptr = new(PoolType, Tag) wchar_t[Capacity];
+			memcpy(ptr, other.ptr, sizeof(wchar_t) * Length);
+			ptr[Length] = '\0';
+		}
+
+		wstring& operator=(const wstring &other)
+		{
+			if (this != &other)
+			{
+				Length = other.length();
+				Capacity = other.Capacity;
+
+				if (!Capacity)
+					Capacity = 1;	//Minimum 1 Capacity.
+
+				ptr = new(PoolType, Tag) wchar_t[Capacity];
+				memcpy(ptr, other.ptr, sizeof(wchar_t) * Length);
+				ptr[Length] = '\0';
+			}
+		}
+
+		~wstring() 
+		{
+			if (ptr)
+			{
+				//Deallocate
+				delete[] ptr;
+			}
+		}
+
+		size_t length() const		//Don't use auto return type(C++14) to keep it compatible with C++11.
+		{
+			return this->Length;
+		}
+
+		const wchar_t* c_str() const
+		{
+			return this->ptr;
+		}
+
+	private:
+		wchar_t *ptr;
+		size_t Length;
+		size_t Capacity;
+	};
+}
